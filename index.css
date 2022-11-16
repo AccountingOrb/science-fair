@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+label, p, h1, h2, h3, h4, h5, h6 {
+    font-family: 'Roboto', sans-serif;
+}
+
+.slider-container {
+    width: 30%;
+    height: 25px;
+}
+
+.slider {
+    margin-left: 8px;
+    width: 80%;
+    vertical-align: middle;
+}
