@@ -6,6 +6,7 @@ let showVelocity = false;
 
 let ball;
 let floor;
+const graphPoints = [];
 
 const FRAME_RATE = 1000 / 60;
 
@@ -124,6 +125,25 @@ class Floor {
     }
 }
 
+class GraphPoint {
+    constructor(x, y, radius, color) {
+        this.radius = radius;
+        this.position = new Vector2(x, y);
+        this.color = color;
+    }
+
+    update() {
+        this.position.x -= 5;
+    }
+
+    draw() {
+        context.beginPath();
+        context.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI, true);
+        context.fillStyle = this.color;
+        context.fill();
+    }
+}
+
 function draw() {
     context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -132,6 +152,18 @@ function draw() {
 
     ball.update();
     ball.draw();
+
+    graphPoints.push(new GraphPoint(ball.position.x, ball.position.y, 5, ball.color))
+    // TODO: checkbox for graph points
+    for (let i = 0; i < graphPoints.length; i++) {
+        const graphPoint = graphPoints[i];
+        graphPoint.update();
+        graphPoint.draw();
+
+        if (graphPoint.position.x < 0 - graphPoint.radius) {
+            graphPoints.shift();
+        }
+    }
 }
 
 function init() {
