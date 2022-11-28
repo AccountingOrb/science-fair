@@ -2,6 +2,7 @@ const canvas = document.getElementById('canvas');
 const context = canvas.getContext('2d');
 
 let gravity = 100;
+let showVelocity = false;
 
 let ball;
 let floor;
@@ -23,6 +24,17 @@ function getRandomNumber(min, max) {
 
     updateGravity();
     gravitySlider.oninput = updateGravity;
+}
+
+{ // Set up showVelocity checkbox.
+    const showVelocityCheckbox = document.getElementById('show-velocity-checkbox');
+
+    function updateShowVelocity() {
+        showVelocity = showVelocityCheckbox.checked;
+    }
+
+    updateShowVelocity();
+    showVelocityCheckbox.oninput = updateShowVelocity;
 }
 
 class Vector2 {
@@ -51,16 +63,20 @@ class Ball {
         this.color = `rgb(${getRandomNumber(20, 230)}, ${getRandomNumber(20, 230)}, ${getRandomNumber(20, 230)})`;
     }
 
+    applyForce(force) {
+        this.velocity.add(force);
+    }
+
     update() {
         if (this.position.y + this.radius >= floor.position.y) {
-            this.velocity.y = -this.velocity.y; // TODO: make it lose energy realistically
-            this.position.y = floor.position.y - this.radius - 5;
+            this.applyForce(new Vector2(0, -this.velocity.y * 1.9)); // TODO: make it lose energy realistically
+            this.position.y = floor.position.y - this.radius - 5; // Move it up a little so it doesn't get stuck in the ground.
 
             return;
         }
 
         const acceleration = gravity / 1000;
-        this.velocity.add(new Vector2(0, acceleration * FRAME_RATE));
+        this.applyForce(new Vector2(0, acceleration * FRAME_RATE)); // Multiply by FRAME_RATE to make it framerate independent.
         this.position.add(this.velocity);
     }
 
@@ -69,6 +85,23 @@ class Ball {
         context.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI, true);
         context.fillStyle = this.color;
         context.fill();
+
+        if (showVelocity) {
+            context.beginPath();
+            context.moveTo(this.position.x, this.position.y);
+            context.lineTo(this.position.x, this.position.y + (this.velocity.y * 5));
+            context.lineWidth = 3;
+            context.strokeStyle = 'black';
+            context.stroke();
+
+            context.fillStyle = 'white';
+            context.strokeStyle = 'black';
+            context.font = '20px Roboto';
+            context.lineWidth = 3;
+            let velocityText = `${this.velocity.y}`.slice(0, this.velocity.y < 0 ? 5 : 4);
+            context.strokeText(velocityText, this.position.x, this.position.y - this.radius - 20);
+            context.fillText(velocityText, this.position.x, this.position.y - this.radius - 20);
+        }
     }
 }
 
