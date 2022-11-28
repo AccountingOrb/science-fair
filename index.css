@@ -14,3 +14,18 @@ label, p, h1, h2, h3, h4, h5, h6 {
     width: 72%;
     vertical-align: middle;
 }
+
+.checkbox-container {
+    width: 30%;
+    height: 25px;
+}
+
+.checkbox {
+    margin-left: 8px;
+    width: 20px;
+    height: 20px;
+}
+
+#credits {
+    font-size: 12px;
+}
