@@ -11,13 +11,29 @@
         <title>Science Fair</title>
     </head>
     <body>
-        <div class="slider-container">
-            <label id="gravity-label" class="slider-label">Gravity ():</label>
-            <input id="gravity-slider" class="slider" type="range" min="0" max="100" value="50">
+        <div id="sliders">
+            <div class="slider-container">
+                <label id="gravity-label" class="slider-label">Gravity ():</label>
+                <input id="gravity-slider" class="slider" type="range" min="0" max="100" value="50">
+            </div>
+            <div class="slider-container">
+                <label id="elasticity-label" class="slider-label">Elasticity ():</label>
+                <input id="elasticity-slider" class="slider" type="range" min="0" max="1" step="0.1" value="0.9">
+            </div>
         </div>
-        <div class="checkbox-container">
-            <label id="show-velocity-label" class="slider-label">Show velocity:</label>
-            <input id="show-velocity-checkbox" class="checkbox" type="checkbox">
+        <div id="checkboxes">
+            <div class="checkbox-container">
+                <label id="show-velocity-label" class="slider-label">Show velocity:</label>
+                <input id="show-velocity-checkbox" class="checkbox" type="checkbox">
+            </div>
+            <div class="checkbox-container">
+                <label id="show-displacement-points-label" class="slider-label">Show displacement points:</label>
+                <input id="show-displacement-points-checkbox" class="checkbox" type="checkbox">
+            </div>
+            <div class="checkbox-container">
+                <label id="show-velocity-points-label" class="slider-label">Show velocity points:</label>
+                <input id="show-velocity-points-checkbox" class="checkbox" type="checkbox">
+            </div>
         </div>
 
         <canvas id="canvas" width="1000" height="470"></canvas>
