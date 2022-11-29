@@ -5,19 +5,21 @@ label, p, h1, h2, h3, h4, h5, h6 {
 }
 
 .slider-container {
-    width: 30%;
+    display: inline-block;
     height: 25px;
+    margin-right: 15px;
 }
 
 .slider {
     margin-left: 8px;
-    width: 72%;
+    width: 300px;
     vertical-align: middle;
 }
 
 .checkbox-container {
-    width: 30%;
+    display: inline-block;
     height: 25px;
+    margin-right: 15px;
 }
 
 .checkbox {
