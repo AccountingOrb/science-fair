@@ -11,6 +11,8 @@ let ball;
 let floor;
 const graphPoints = [];
 
+const heldKeys = {};
+
 const FRAME_RATE = 1000 / 60;
 
 function getRandomNumber(min, max) {
@@ -211,9 +213,25 @@ function draw() {
     }
 }
 
+function onClick(e) {
+    if (!heldKeys[17]) return;
+
+    const x = e.pageX;
+    const y = e.pageY;
+    
+    ball.position = new Vector2(x, y - (ball.radius / 2));
+    ball.velocity = new Vector2();
+}
+
+onkeydown = onkeyup = function(e) {
+    heldKeys[e.keyCode] = e.type == 'keydown';
+}
+
 function init() {
     ball = new Ball(canvas.width / 2, canvas.height / 2 - 100, 50);
     floor = new Floor();
+
+    canvas.addEventListener('mousedown', onClick);
 
     setInterval(draw, FRAME_RATE);
 }
