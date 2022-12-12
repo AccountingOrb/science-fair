@@ -34,10 +34,17 @@
                 <label id="show-velocity-points-label" class="slider-label">Show velocity points:</label>
                 <input id="show-velocity-points-checkbox" class="checkbox" type="checkbox">
             </div>
+            <div class="checkbox-container">
+                <label id="show-extra-info-label" class="slider-label">Show extra info:</label>
+                <input id="show-extra-info-checkbox" class="checkbox" type="checkbox">
+            </div>
         </div>
         <p id="info">Use Ctrl + Click to move the ball</p>
 
-        <canvas id="canvas" width="1000" height="470"></canvas>
+        <div id="main-container">
+            <canvas id="canvas" width="1000" height="470"></canvas>
+            <p id="extra-info"></p>
+        </div>
 
         <p id="credits">By Musa Munadeen and Jonathan Poirier</p>
     </body>
