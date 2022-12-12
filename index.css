@@ -28,6 +28,10 @@ label, p, h1, h2, h3, h4, h5, h6 {
     height: 20px;
 }
 
+#main-container {
+    display: flex;
+}
+
 #credits {
     font-size: 12px;
 }
