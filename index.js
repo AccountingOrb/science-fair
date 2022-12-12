@@ -1,8 +1,10 @@
 const canvas = document.getElementById('canvas');
 const context = canvas.getContext('2d');
 
-let gravity = 100;
-let elasticity = 1.9;
+const extraInfoLabel = document.getElementById('extra-info');
+
+let gravity = 0;
+let elasticity = 0;
 let showVelocity = false;
 let showDisplacementPoints = false;
 let showVelocityPoints = false;
@@ -19,13 +21,27 @@ function getRandomNumber(min, max) {
     return Math.floor(Math.random() * (max-min) + min);
 }
 
+function getIncreasedOrDecreasedHtml(increased) {
+    return `<span style="color: ${increased ? 'green' : 'red'}">${increased ? 'increased' : 'decreased'}</span>`;
+}
+
 { // Set up gravity slider.
     const gravitySlider = document.getElementById('gravity-slider');
     const gravityLabel = document.getElementById('gravity-label');
 
+    let lastGravity = gravitySlider.value;
+
     function updateGravity() {
         gravity = gravitySlider.value;
         gravityLabel.innerText = `Gravity (${gravity}):`;
+
+        if (gravity > lastGravity) {
+            extraInfoLabel.innerHTML = `You have ${getIncreasedOrDecreasedHtml(true)} the acceleration of gravity, therefore a greater downwards force is applied.`;
+        } else if (gravity < lastGravity) {
+            extraInfoLabel.innerHTML = `You have ${getIncreasedOrDecreasedHtml(false)} the acceleration of gravity, therefore a smaller downwards force is applied.`;
+        }
+
+        lastGravity = gravity;
     }
 
     updateGravity();
@@ -36,9 +52,19 @@ function getRandomNumber(min, max) {
     const elasticitySlider = document.getElementById('elasticity-slider');
     const elasticityLabel = document.getElementById('elasticity-label');
 
+    let lastElasticity = elasticitySlider.value;
+
     function updateElasticity() {
         elasticity = elasticitySlider.value;
         elasticityLabel.innerText = `Elasticity (${elasticity}):`;
+
+        if (elasticity > lastElasticity) {
+            extraInfoLabel.innerHTML = `You have ${getIncreasedOrDecreasedHtml(true)} the elasticity of the ball, therefore more force will be applied to make the ball return to its original shape when it hits the ground and gets compressed. This shape restoration force is what causes the ball to bounce.`;
+        } else if (elasticity < lastElasticity) {
+            extraInfoLabel.innerHTML = `You have ${getIncreasedOrDecreasedHtml(false)} the elasticity of the ball, therefore more force will be applied to make the ball return to its original shape when it hits the ground and gets compressed. This shape restoration force is what causes the ball to bounce.`;
+        }
+
+        lastElasticity = elasticity;
     }
 
     updateElasticity();
@@ -76,6 +102,17 @@ function getRandomNumber(min, max) {
 
     updateShowVelocityPoints();
     showVelocityPointsCheckbox.oninput = updateShowVelocityPoints;
+}
+
+{ // Set up showExtraInfo checkbox.
+    const showExtraInfoCheckbox = document.getElementById('show-extra-info-checkbox');
+
+    function updateShowExtraInfo() {
+        extraInfoLabel.hidden = !showExtraInfoCheckbox.checked;
+    }
+
+    updateShowExtraInfo();
+    showExtraInfoCheckbox.oninput = updateShowExtraInfo;
 }
 
 class Vector2 {
