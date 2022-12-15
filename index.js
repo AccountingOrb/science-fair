@@ -61,7 +61,7 @@ function getIncreasedOrDecreasedHtml(increased) {
         if (elasticity > lastElasticity) {
             extraInfoLabel.innerHTML = `You have ${getIncreasedOrDecreasedHtml(true)} the elasticity of the ball, therefore more force will be applied to make the ball return to its original shape when it hits the ground and gets compressed. This shape restoration force is what causes the ball to bounce.`;
         } else if (elasticity < lastElasticity) {
-            extraInfoLabel.innerHTML = `You have ${getIncreasedOrDecreasedHtml(false)} the elasticity of the ball, therefore less force will be applied to make the ball return to its original shape when it hits the ground and gets compressed. This shape restoration force is what causes the ball to bounce.`;
+            extraInfoLabel.innerHTML = `You have ${getIncreasedOrDecreasedHtml(false)} the elasticity of the ball, therefore lessd force will be applied to make the ball return to its original shape when it hits the ground and gets compressed. This shape restoration force is what causes the ball to bounce.`;
         }
 
         lastElasticity = elasticity;
