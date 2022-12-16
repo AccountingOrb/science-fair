@@ -6,8 +6,8 @@ const extraInfoLabel = document.getElementById('extra-info');
 let gravity = 0;
 let elasticity = 0;
 let showVelocity = false;
-let showDisplacementPoints = false;
-let showVelocityPoints = false;
+let plotDisplacement = false;
+let plotVelocity = false;
 
 let ball;
 let floor;
@@ -35,7 +35,7 @@ function pixelsPerFrameToCmPerSecond(value) {
 
     let lastGravity = gravitySlider.value;
 
-    function updateGravity() {
+    function update() {
         gravity = gravitySlider.value;
         gravityLabel.innerText = `Gravity (${gravity}):`;
 
@@ -48,8 +48,8 @@ function pixelsPerFrameToCmPerSecond(value) {
         lastGravity = gravity;
     }
 
-    updateGravity();
-    gravitySlider.oninput = updateGravity;
+    update();
+    gravitySlider.oninput = update;
 }
 
 { // Set up elasticity slider.
@@ -58,7 +58,7 @@ function pixelsPerFrameToCmPerSecond(value) {
 
     let lastElasticity = elasticitySlider.value;
 
-    function updateElasticity() {
+    function update() {
         elasticity = elasticitySlider.value;
         elasticityLabel.innerText = `Elasticity (${elasticity}):`;
 
@@ -71,52 +71,52 @@ function pixelsPerFrameToCmPerSecond(value) {
         lastElasticity = elasticity;
     }
 
-    updateElasticity();
-    elasticitySlider.oninput = updateElasticity;
+    update();
+    elasticitySlider.oninput = update;
 }
 
 { // Set up showVelocity checkbox.
     const showVelocityCheckbox = document.getElementById('show-velocity-checkbox');
 
-    function updateShowVelocity() {
+    function update() {
         showVelocity = showVelocityCheckbox.checked;
     }
 
-    updateShowVelocity();
-    showVelocityCheckbox.oninput = updateShowVelocity;
+    update();
+    showVelocityCheckbox.oninput = update;
 }
 
-{ // Set up showDisplacementPoints checkbox.
-    const showDisplacementPointsCheckbox = document.getElementById('show-displacement-points-checkbox');
+{ // Set up plotDisplacement checkbox.
+    const plotDisplacementCheckbox = document.getElementById('plot-displacement-checkbox');
 
-    function updateShowDisplacementPoints() {
-        showDisplacementPoints = showDisplacementPointsCheckbox.checked;
+    function update() {
+        plotDisplacement = plotDisplacementCheckbox.checked;
     }
 
-    updateShowDisplacementPoints();
-    showDisplacementPointsCheckbox.oninput = updateShowDisplacementPoints;
+    update();
+    plotDisplacementCheckbox.oninput = update;
 }
 
 { // Set up showVelocityPoints checkbox.
-    const showVelocityPointsCheckbox = document.getElementById('show-velocity-points-checkbox');
+    const plotVelocityCheckbox = document.getElementById('plot-velocity-checkbox');
 
-    function updateShowVelocityPoints() {
-        showVelocityPoints = showVelocityPointsCheckbox.checked;
+    function update() {
+        plotVelocity = plotVelocityCheckbox.checked;
     }
 
-    updateShowVelocityPoints();
-    showVelocityPointsCheckbox.oninput = updateShowVelocityPoints;
+    update();
+    plotVelocityCheckbox.oninput = update;
 }
 
 { // Set up showExtraInfo checkbox.
     const showExtraInfoCheckbox = document.getElementById('show-extra-info-checkbox');
 
-    function updateShowExtraInfo() {
+    function update() {
         extraInfoLabel.hidden = !showExtraInfoCheckbox.checked;
     }
 
-    updateShowExtraInfo();
-    showExtraInfoCheckbox.oninput = updateShowExtraInfo;
+    update();
+    showExtraInfoCheckbox.oninput = update;
 }
 
 class Vector2 {
@@ -236,10 +236,10 @@ function draw() {
     ball.update();
     ball.draw();
 
-    if (showDisplacementPoints) {
+    if (plotDisplacement) {
         graphPoints.push(new GraphPoint(ball.position.x, ball.position.y, 5, ball.color));
     }
-    if (showVelocityPoints) {
+    if (plotVelocity) {
         graphPoints.push(new GraphPoint(ball.position.x, canvas.height / 2 + (ball.velocity.y), 5, ball.color));
     }
 
