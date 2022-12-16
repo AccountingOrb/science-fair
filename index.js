@@ -8,6 +8,8 @@ let elasticity = 0;
 let showVelocity = false;
 let plotDisplacement = false;
 let plotVelocity = false;
+let plotGravPotentialEnergy = false;
+let plotKineticEnergy = false;
 
 let ball;
 let floor;
@@ -106,6 +108,28 @@ function pixelsPerFrameToCmPerSecond(value) {
 
     update();
     plotVelocityCheckbox.oninput = update;
+}
+
+{ // Set up plotGravPotentialEnergy checkbox.
+    const plotGravPotentialEnergyCheckbox = document.getElementById('plot-grav-potential-energy-checkbox');
+
+    function update() {
+        plotGravPotentialEnergy = plotGravPotentialEnergyCheckbox.checked;
+    }
+
+    update();
+    plotGravPotentialEnergyCheckbox.oninput = update;
+}
+
+{ // Set up plotKineticEnergy checkbox.
+    const plotKineticEnergyCheckbox = document.getElementById('plot-kinetic-energy-checkbox');
+
+    function update() {
+        plotKineticEnergy = plotKineticEnergyCheckbox.checked;
+    }
+
+    update();
+    plotKineticEnergyCheckbox.oninput = update;
 }
 
 { // Set up showExtraInfo checkbox.
@@ -237,10 +261,35 @@ function draw() {
     ball.draw();
 
     if (plotDisplacement) {
-        graphPoints.push(new GraphPoint(ball.position.x, ball.position.y, 5, ball.color));
+        graphPoints.push(new GraphPoint(ball.position.x, ball.position.y, 5, 'rgb(67, 188, 224)'));
     }
     if (plotVelocity) {
-        graphPoints.push(new GraphPoint(ball.position.x, canvas.height / 2 + (ball.velocity.y), 5, ball.color));
+        graphPoints.push(new GraphPoint(ball.position.x, (canvas.height / 2) + (ball.velocity.y), 5, 'rgb(33, 204, 110)'));
+    }
+    if (plotGravPotentialEnergy) {
+        /*
+            mgh
+
+            m = 1
+
+            Divide result by 100 to make it scale and fit to the canvas.
+        */
+        const height = canvas.height - ball.position.y - ball.radius;
+        const gravPotentialEnergy = -(1 * gravity * height) / 100;
+
+        graphPoints.push(new GraphPoint(ball.position.x, (canvas.height / 2) + gravPotentialEnergy, 5, 'rgb(144, 47, 196)'));
+    }
+    if (plotKineticEnergy) {
+        /*
+            (mv^2) / 2
+
+            m = 1
+
+            Divide result by 4 to make it scale and fit to the canvas.
+        */
+        const kineticEnergy = -((1 * Math.pow(ball.velocity.y, 2)) / 2) / 2;
+
+        graphPoints.push(new GraphPoint(ball.position.x, (canvas.height / 2) + kineticEnergy, 5, 'rgb(232, 48, 23)'));
     }
 
     for (let i = 0; i < graphPoints.length; i++) {
