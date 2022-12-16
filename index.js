@@ -272,10 +272,10 @@ function draw() {
 
             m = 1
 
-            Divide result by 100 to make it scale and fit to the canvas.
+            Divide result by 120 to make it scale and fit to the canvas.
         */
         const height = canvas.height - ball.position.y - ball.radius;
-        const gravPotentialEnergy = -(1 * gravity * height) / 100;
+        const gravPotentialEnergy = -(1 * gravity * height) / 120;
 
         graphPoints.push(new GraphPoint(ball.position.x, (canvas.height / 2) + gravPotentialEnergy, 5, 'rgb(144, 47, 196)'));
     }
