@@ -97,7 +97,7 @@ function pixelsPerFrameToCmPerSecond(value) {
     plotDisplacementCheckbox.oninput = update;
 }
 
-{ // Set up showVelocityPoints checkbox.
+{ // Set up plotVelocity checkbox.
     const plotVelocityCheckbox = document.getElementById('plot-velocity-checkbox');
 
     function update() {
