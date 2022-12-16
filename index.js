@@ -25,6 +25,10 @@ function getIncreasedOrDecreasedHtml(increased) {
     return `<span style="color: ${increased ? 'green' : 'red'}">${increased ? 'increased' : 'decreased'}</span>`;
 }
 
+function pixelsPerFrameToCmPerSecond(value) {
+    return (value * 59.99999999999988) * 0.026458;
+}
+
 { // Set up gravity slider.
     const gravitySlider = document.getElementById('gravity-slider');
     const gravityLabel = document.getElementById('gravity-label');
@@ -178,9 +182,9 @@ class Ball {
             context.strokeStyle = 'black';
             context.font = '20px Roboto';
             context.lineWidth = 3;
-            let velocityText = `${this.velocity.y}`.slice(0, this.velocity.y < 0 ? 5 : 4) +  ' [DOWN]';
-            context.strokeText(velocityText, this.position.x - 47, this.position.y - this.radius - 20);
-            context.fillText(velocityText, this.position.x - 47, this.position.y - this.radius - 20);
+            let velocityText = `${pixelsPerFrameToCmPerSecond(this.velocity.y)}`.slice(0, this.velocity.y < 0 ? 5 : 4) +  ' cm/s [DOWN]';
+            context.strokeText(velocityText, this.position.x - 75, this.position.y - this.radius - 20);
+            context.fillText(velocityText, this.position.x - 75, this.position.y - this.radius - 20);
         }
     }
 }
