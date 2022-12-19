@@ -40,3 +40,19 @@ label, p, h1, h2, h3, h4, h5, h6 {
     font-size: 15px;
     color: rgb(47, 0, 255);
 }
+
+#plot-displacement-label {
+    color: rgb(67, 188, 224);
+}
+
+#plot-velocity-label {
+    color: rgb(33, 204, 110);
+}
+
+#plot-grav-potential-energy-label {
+    color: rgb(144, 47, 196);
+}
+
+#plot-kinetic-energy-label {
+    color: rgb(232, 48, 23);
+}
