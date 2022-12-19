@@ -5,6 +5,7 @@ const extraInfoLabel = document.getElementById('extra-info');
 
 let gravity = 0;
 let elasticity = 0;
+let plottedPointsSpeed = 5;
 let showVelocity = false;
 let plotDisplacement = false;
 let plotVelocity = false;
@@ -13,7 +14,10 @@ let plotKineticEnergy = false;
 
 let ball;
 let floor;
+let pauseButton;
 const graphPoints = [];
+
+let paused = false;
 
 const heldKeys = {};
 
@@ -29,6 +33,15 @@ function getIncreasedOrDecreasedHtml(increased) {
 
 function pixelsPerFrameToCmPerSecond(value) {
     return (value * 59.99999999999988) * 0.026458;
+}
+
+function getMousePos(e) {
+    const rect = canvas.getBoundingClientRect();
+    return new Vector2(e.clientX - rect.left, e.clientY - rect.top);
+}
+
+function isInsideRect(input, rectPosition, rectSize) {
+    return input.x > rectPosition.x && input.x < rectPosition.x + rectSize.x && input.y < rectPosition.y + rectSize.y && input.y > rectPosition.y;
 }
 
 { // Set up gravity slider.
@@ -75,6 +88,19 @@ function pixelsPerFrameToCmPerSecond(value) {
 
     update();
     elasticitySlider.oninput = update;
+}
+
+{ // Set up plottedPointsSpeed slider.
+    const plottedPointsSpeedSlider = document.getElementById('plotted-points-speed-slider');
+    const plottedPointsSpeedLabel = document.getElementById('plotted-points-speed-label');
+
+    function update() {
+        plottedPointsSpeed = plottedPointsSpeedSlider.value;
+        plottedPointsSpeedLabel.innerText = `Plotted points speed (${plottedPointsSpeed}):`;
+    }
+
+    update();
+    plottedPointsSpeedSlider.oninput = update;
 }
 
 { // Set up showVelocity checkbox.
@@ -240,7 +266,7 @@ class GraphPoint {
     }
 
     update() {
-        this.position.x -= 5;
+        this.position.x -= plottedPointsSpeed;
     }
 
     draw() {
@@ -251,56 +277,82 @@ class GraphPoint {
     }
 }
 
+class Button {
+    constructor(x, y, width, height, image, callback) {
+        this.position = new Vector2(x, y);
+        this.size = new Vector2(width, height);
+        this.image = image;
+
+        canvas.addEventListener('mousedown', (e) => {
+            if (!isInsideRect(getMousePos(e), this.position, this.size)) return;
+
+            callback();
+        });
+    }
+
+    draw() {
+        if (paused) {
+            context.clearRect(this.position.x, this.position.y, this.size.x, this.size.y);
+        }
+
+        context.drawImage(this.image, this.position.x, this.position.y, this.size.x, this.size.y);
+    }
+}
+
 function draw() {
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    if (!paused) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
 
-    floor.update();
-    floor.draw();
+        floor.update();
+        floor.draw();
 
-    ball.update();
-    ball.draw();
+        ball.update();
+        ball.draw();
 
-    if (plotDisplacement) {
-        graphPoints.push(new GraphPoint(ball.position.x, ball.position.y, 5, 'rgb(67, 188, 224)'));
-    }
-    if (plotVelocity) {
-        graphPoints.push(new GraphPoint(ball.position.x, (canvas.height / 2) + (ball.velocity.y), 5, 'rgb(33, 204, 110)'));
-    }
-    if (plotGravPotentialEnergy) {
-        /*
-            mgh
+        if (plotDisplacement) {
+            graphPoints.push(new GraphPoint(ball.position.x, ball.position.y, 5, 'rgb(67, 188, 224)'));
+        }
+        if (plotVelocity) {
+            graphPoints.push(new GraphPoint(ball.position.x, (canvas.height / 2) + (ball.velocity.y), 5, 'rgb(33, 204, 110)'));
+        }
+        if (plotGravPotentialEnergy) {
+            /*
+                mgh
 
-            m = 1
+                m = 1
 
-            Divide result by 120 to make it scale and fit to the canvas.
-        */
-        const height = canvas.height - ball.position.y - ball.radius;
-        const gravPotentialEnergy = -(1 * gravity * height) / 120;
+                Divide result by 120 to make it scale and fit to the canvas.
+            */
+            const height = canvas.height - ball.position.y - ball.radius;
+            const gravPotentialEnergy = -(1 * gravity * height) / 120;
 
-        graphPoints.push(new GraphPoint(ball.position.x, (canvas.height / 2) + gravPotentialEnergy, 5, 'rgb(144, 47, 196)'));
-    }
-    if (plotKineticEnergy) {
-        /*
-            (mv^2) / 2
+            graphPoints.push(new GraphPoint(ball.position.x, (canvas.height / 2) + gravPotentialEnergy, 5, 'rgb(144, 47, 196)'));
+        }
+        if (plotKineticEnergy) {
+            /*
+                (mv^2) / 2
 
-            m = 1
+                m = 1
 
-            Divide result by 4 to make it scale and fit to the canvas.
-        */
-        const kineticEnergy = -((1 * Math.pow(ball.velocity.y, 2)) / 2) / 2;
+                Divide result by 4 to make it scale and fit to the canvas.
+            */
+            const kineticEnergy = -((1 * Math.pow(ball.velocity.y, 2)) / 2) / 2;
 
-        graphPoints.push(new GraphPoint(ball.position.x, (canvas.height / 2) + kineticEnergy, 5, 'rgb(232, 48, 23)'));
-    }
+            graphPoints.push(new GraphPoint(ball.position.x, (canvas.height / 2) + kineticEnergy, 5, 'rgb(232, 48, 23)'));
+        }
 
-    for (let i = 0; i < graphPoints.length; i++) {
-        const graphPoint = graphPoints[i];
-        graphPoint.update();
-        graphPoint.draw();
+        for (let i = 0; i < graphPoints.length; i++) {
+            const graphPoint = graphPoints[i];
+            graphPoint.update();
+            graphPoint.draw();
 
-        if (graphPoint.position.x < 0 - graphPoint.radius) {
-            graphPoints.shift();
+            if (graphPoint.position.x < 0 - graphPoint.radius) {
+                graphPoints.shift();
+            }
         }
     }
+
+    pauseButton.draw();
 }
 
 function onClick(e) {
@@ -320,6 +372,19 @@ onkeydown = onkeyup = function(e) {
 function init() {
     ball = new Ball(canvas.width / 2, canvas.height / 2 - 100, 50);
     floor = new Floor();
+    {
+        const pauseImage = new Image();
+        pauseImage.src = 'assets/Pause.png';
+
+        const playImage = new Image();
+        playImage.src = 'assets/Play.png';
+
+        pauseButton = new Button(canvas.width - 55, 5, 50, 50, pauseImage, () => {
+            paused = !paused;
+
+            pauseButton.image = paused ? playImage : pauseImage;
+        });
+    }
 
     canvas.addEventListener('mousedown', onClick);
 
