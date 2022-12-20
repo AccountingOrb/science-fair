@@ -357,9 +357,11 @@ function draw() {
 
 function onClick(e) {
     if (!heldKeys[17]) return;
+    
+    const mousePos = getMousePos(e);
 
-    const x = e.pageX;
-    const y = e.pageY;
+    const x = mousePos.x;
+    const y = mousePos.y;
     
     ball.position = new Vector2(x, y - (ball.radius / 2));
     ball.velocity = new Vector2();
