@@ -18,6 +18,7 @@ let pauseButton;
 const graphPoints = [];
 
 let paused = false;
+let msElapsed = 0;
 
 const heldKeys = {};
 
@@ -31,8 +32,16 @@ function getIncreasedOrDecreasedHtml(increased) {
     return `<span style="color: ${increased ? 'green' : 'red'}">${increased ? 'increased' : 'decreased'}</span>`;
 }
 
+function pixelsToCm(value) {
+    return value * 0.026458;
+}
+
 function pixelsPerFrameToCmPerSecond(value) {
-    return (value * 59.99999999999988) * 0.026458;
+    return pixelsToCm(value * 59.99999999999988);
+}
+
+function msToSeconds(value) {
+    return value / 1000;
 }
 
 function getMousePos(e) {
@@ -232,7 +241,7 @@ class Ball {
             context.strokeStyle = 'black';
             context.font = '20px Roboto';
             context.lineWidth = 3;
-            let velocityText = `${pixelsPerFrameToCmPerSecond(this.velocity.y)}`.slice(0, this.velocity.y < 0 ? 5 : 4) +  ' cm/s [DOWN]';
+            const velocityText = pixelsPerFrameToCmPerSecond(this.velocity.y).toFixed(2) +  ' cm/s [DOWN]';
             context.strokeText(velocityText, this.position.x - 75, this.position.y - this.radius - 20);
             context.fillText(velocityText, this.position.x - 75, this.position.y - this.radius - 20);
         }
@@ -350,6 +359,16 @@ function draw() {
                 graphPoints.shift();
             }
         }
+
+        msElapsed += FRAME_RATE;
+
+        context.fillStyle = 'white';
+        context.strokeStyle = 'black';
+        context.font = '20px Roboto';
+        context.lineWidth = 3;
+        const secondsElapsedText = msToSeconds(msElapsed).toFixed(2) +  ' s';
+        context.strokeText(secondsElapsedText, 5, canvas.height - floor.height - 5);
+        context.fillText(secondsElapsedText, 5, canvas.height - floor.height - 5);
     }
 
     pauseButton.draw();
@@ -385,6 +404,14 @@ function init() {
             paused = !paused;
 
             pauseButton.image = paused ? playImage : pauseImage;
+
+            context.fillStyle = 'white';
+            context.strokeStyle = 'black';
+            context.font = '20px Roboto';
+            context.lineWidth = 3;
+            const heightText = 'height = ' + Math.max(0, pixelsToCm((floor.position.y) - (ball.position.y + ball.radius))).toFixed(2) +  ' cm';
+            context.strokeText(heightText, ball.position.x + ball.radius + 5, canvas.height - floor.height - 5);
+            context.fillText(heightText, ball.position.x + ball.radius + 5, canvas.height - floor.height - 5);
         });
     }
 
